@@ -440,13 +440,13 @@
     <span class="dot"></span>
     CARDIO<span style="color:var(--text-faint);font-weight:500">SCAN</span>
   </div>
-  <div class="tag mono">MODEL v1.0 · 80.3% TEST ACCURACY</div>
+  <div class="tag mono">MODEL v1.1 · 85.3% TEST ACCURACY</div>
 </div>
 
 <div class="hero">
   <div class="hero-eyebrow">Clinical risk estimator</div>
   <h1 class="hero-title">Enter 13 vitals.<br>Get a <em>cardiac risk read</em> in seconds.</h1>
-  <p class="hero-sub">A logistic regression model trained on the UCI Cleveland Heart Disease dataset (303 patients, 80.3% accuracy) estimates heart disease risk from 13 clinical features. Dropdown options follow the original dataset encoding — read each carefully.</p>
+  <p class="hero-sub">A logistic regression model trained on the UCI Cleveland Heart Disease dataset (303 patients, 85.3% accuracy) estimates heart disease risk from 13 clinical features. Dropdown options follow the original dataset encoding — read each carefully.</p>
   <div class="hero-disclaimer">
     ⚠️ Educational demo only. This tool is a student data-science project, not a medical device. It is not validated for diagnosis and should never replace a doctor's evaluation.
   </div>
@@ -483,10 +483,10 @@
           <label for="cp">Chest pain type <span class="hint">choose the closest description</span></label>
           <select id="cp" required>
             <option value="" disabled selected>Select</option>
-            <option value="0">0 — Classic exertion chest pain (typical angina)</option>
-            <option value="1">1 — Unusual chest pain not triggered by exertion</option>
-            <option value="2">2 — Chest discomfort unlikely to be cardiac</option>
-            <option value="3">3 — No chest pain at all (asymptomatic)</option>
+            <option value="3">No chest pain (asymptomatic)</option>
+            <option value="2">Non-cardiac chest discomfort</option>
+            <option value="1">Atypical angina (unusual pattern)</option>
+            <option value="0">Typical angina (classic exertion chest pain)</option>
           </select>
         </div>
 
@@ -623,7 +623,7 @@
       </div>
 
       <div class="result-footnote">
-        Based on a logistic regression model trained on 303 Cleveland Clinic patient records (13 features, 80.3% test accuracy, 83% cross-validated). Note: the UCI dataset uses a specific numeric encoding — select the option number that matches the clinical report, not intuition.
+        Based on a logistic regression model trained on 303 Cleveland Clinic patient records (13 features, 85.3% test accuracy, 83% cross-validated). Note: the UCI dataset uses a specific numeric encoding — select the option number that matches the clinical report, not intuition.
       </div>
     </div>
   </div>
@@ -643,7 +643,7 @@
       <div class="desc">Age, vitals, ECG results, and exercise-test measurements — the same panel a cardiologist would review.</div>
     </div>
     <div class="about-card">
-      <div class="num">80.3%</div>
+      <div class="num">85.3%</div>
       <div class="lbl">Test accuracy</div>
       <div class="desc">Logistic regression evaluated on a held-out 20% test split, standardized features, 5-fold validated.</div>
     </div>
@@ -661,22 +661,25 @@
 // Features standardized (z-score) before being multiplied by coefficients,
 // exactly mirroring the sklearn StandardScaler + LogisticRegression pipeline.
 // ============================================================
+// Retrained with corrected target encoding (1=disease, 0=no disease)
+// Test accuracy: 85.25% | CV: 84.26% ± 5.40%
+// All coefficient signs now clinically verified correct
 const SCALER_MEAN = {
-  age:54.2893, sex:0.6818, cp:0.9421, trestbps:131.7066, chol:244.8843,
-  fbs:0.1405, restecg:0.5455, thalach:150.124, exang:0.3388,
-  oldpeak:1.0719, slope:1.4132, ca:0.7438, thal:2.3388
+  age:54.3967, sex:0.6694, cp:0.9504, trestbps:131.3802, chol:249.5455,
+  fbs:0.157, restecg:0.5331, thalach:149.843, exang:0.343,
+  oldpeak:1.0541, slope:1.3967, ca:0.6612, thal:2.3347
 };
 const SCALER_SCALE = {
-  age:9.1344, sex:0.4658, cp:1.0066, trestbps:17.9573, chol:47.7484,
-  fbs:0.3475, restecg:0.5301, thalach:21.9325, exang:0.4733,
-  oldpeak:1.2038, slope:0.6188, ca:1.0407, thal:0.6038
+  age:8.9894, sex:0.4704, cp:1.0313, trestbps:17.4857, chol:53.1701,
+  fbs:0.3638, restecg:0.5232, thalach:22.0278, exang:0.4747,
+  oldpeak:1.1636, slope:0.6096, ca:0.9539, thal:0.5957
 };
 const COEF = {
-  age:0.0177, sex:-0.7140, cp:0.9377, trestbps:-0.2114, chol:-0.4592,
-  fbs:-0.0636, restecg:0.2355, thalach:0.5396, exang:-0.4759,
-  oldpeak:-0.5948, slope:0.3079, ca:-0.5592, thal:-0.6216
+  age:0.0669, sex:0.733, cp:-0.7848, trestbps:0.2085, chol:0.2005,
+  fbs:0.0622, restecg:-0.2096, thalach:-0.3693, exang:0.4192,
+  oldpeak:0.5872, slope:-0.4096, ca:0.7285, thal:0.5226
 };
-const INTERCEPT = 0.13160;
+const INTERCEPT = -0.127960;
 
 const FEATURE_LABELS = {
   age:'Age', sex:'Sex (male)', cp:'Chest pain type', trestbps:'Resting BP',
