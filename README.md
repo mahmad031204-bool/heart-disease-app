@@ -1,5 +1,5 @@
 Project Title: Cardio Risk Predictor
-Description: "A web application that utilizes machine learning to predict the likelihood of cardiovascular disease based on user health metrics.").
+Description: "A website that utilizes machine learning to predict the likelihood of cardiovascular disease based on user health metrics.").
 ##  Features
 * **Risk Assessment:** Interactive form taking inputs like age, blood pressure, cholesterol levels, and smoking habits.
 * **Instant ML Predictions:** Processes input data through a pre-trained machine learning model to estimate cardiovascular risk instantly.
